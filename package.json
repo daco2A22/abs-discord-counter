@@ -1,16 +1,17 @@
 {
   "name": "abs-counter",
   "version": "1.0.0",
-  "description": "",
+  "description": "Discord counter bot",
   "main": "index.js",
   "scripts": {
-  "start": "node index.js"
-},
+    "start": "node index.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "discord.js": "^14.25.1"
+    "discord.js": "^14.25.1",
+    "express": "^4.21.2"
   }
 }
