@@ -314,12 +314,15 @@ async function rebuildFromDiscord() {
 /* ----------------------------- */
 /* Discord events                */
 /* ----------------------------- */
-client.on("ready", async () => {
+client.once("ready", async () => {
   try {
     console.log(`Connecté en tant que ${client.user.tag}`);
+
     loadData();
     console.log(`Données chargées : ${registrations.length} inscrit(s).`);
+
     await rebuildFromDiscord();
+
   } catch (error) {
     console.error("Erreur au démarrage :", error);
   }
