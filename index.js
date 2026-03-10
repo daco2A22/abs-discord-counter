@@ -89,7 +89,7 @@ function parseRegistrationFromMessage(message) {
 
   const getField = (names) => {
     const field = embed.fields?.find(f =>
-      names.some(name => (f.name || "").toLowerCase().includes(name))
+      names.some(name => ((f.name || "").toLowerCase().includes(name)))
     );
     return field?.value?.trim() || "";
   };
@@ -386,18 +386,6 @@ process.on("unhandledRejection", (error) => {
 
 process.on("uncaughtException", (error) => {
   console.error("Uncaught exception :", error);
-});
-
-console.log("TOKEN présent :", !!TOKEN);
-
-if (!TOKEN) {
-  console.error("TOKEN manquant dans les variables d'environnement.");
-  process.exit(1);
-}
-
-console.log("Tentative de connexion à Discord...");
-client.login(TOKEN).catch((error) => {
-  console.error("Erreur login Discord :", error);
 });
 
 console.log("TOKEN présent :", !!TOKEN);
