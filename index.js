@@ -314,7 +314,7 @@ async function rebuildFromDiscord() {
 /* ----------------------------- */
 /* Discord events                */
 /* ----------------------------- */
-client.once("ready", () => {
+client.on("ready", async () => {
   try {
     console.log(`Connecté en tant que ${client.user.tag}`);
     loadData();
@@ -386,6 +386,18 @@ process.on("unhandledRejection", (error) => {
 
 process.on("uncaughtException", (error) => {
   console.error("Uncaught exception :", error);
+});
+
+console.log("TOKEN présent :", !!TOKEN);
+
+if (!TOKEN) {
+  console.error("TOKEN manquant dans les variables d'environnement.");
+  process.exit(1);
+}
+
+console.log("Tentative de connexion à Discord...");
+client.login(TOKEN).catch((error) => {
+  console.error("Erreur login Discord :", error);
 });
 
 console.log("TOKEN présent :", !!TOKEN);
