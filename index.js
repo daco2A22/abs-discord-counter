@@ -31,7 +31,9 @@ let registrations = [];
 let updateTimeout = null;
 let updateRunning = false;
 
-/* Render web server */
+/* ----------------------------- */
+/* Render web server             */
+/* ----------------------------- */
 app.get("/", (req, res) => {
   res.send("Bot running");
 });
@@ -40,7 +42,9 @@ app.listen(PORT, () => {
   console.log(`Web server running on port ${PORT}`);
 });
 
-/* Storage */
+/* ----------------------------- */
+/* Storage                       */
+/* ----------------------------- */
 function loadData() {
   try {
     if (!fs.existsSync(DATA_FILE)) {
@@ -60,23 +64,17 @@ function loadData() {
 
 function saveData() {
   try {
-    fs.writeFileSync(
-      DATA_FILE,
-      JSON.stringify({ registrations }, null, 2)
-    );
+    fs.writeFileSync(DATA_FILE, JSON.stringify({ registrations }, null, 2));
   } catch (error) {
     console.error("Erreur écriture registrations.json :", error);
   }
 }
 
-/* Helpers */
-async function safeFetchMessage(message) {
-  try {
-    if (message.partial) return await message.fetch();
-    return message;
-  } catch {
-    return message;
-  }
+/* ----------------------------- */
+/* Helpers                       */
+/* ----------------------------- */
+function normalize(value) {
+  return (value || "").trim().toLowerCase();
 }
 
 function isRegistrationMessage(message) {
@@ -85,17 +83,13 @@ function isRegistrationMessage(message) {
   return title.includes("Nouvelle inscription");
 }
 
-function normalize(value) {
-  return (value || "").trim().toLowerCase();
-}
-
 function parseRegistrationFromMessage(message) {
   const embed = message.embeds?.[0];
   if (!embed) return null;
 
   const getField = (names) => {
     const field = embed.fields?.find(f =>
-      names.some(n => f.name.toLowerCase().includes(n))
+      names.some(name => (f.name || "").toLowerCase().includes(name))
     );
     return field?.value?.trim() || "";
   };
@@ -117,14 +111,14 @@ function parseRegistrationFromMessage(message) {
   };
 }
 
-function isDuplicate(entry) {
-  return registrations.some(r =>
+function isDuplicate(entry, list = registrations) {
+  return list.some(r =>
     normalize(r.pseudo) === normalize(entry.pseudo) &&
     normalize(r.discord) === normalize(entry.discord)
   );
 }
 
-function getChannelCounterName() {
+function getCounterChannelName() {
   return `📋 inscription (${registrations.length})`;
 }
 
@@ -139,7 +133,7 @@ function buildRecapMessage() {
     ].join("\n");
   }
 
-  const lines = registrations
+  const lines = [...registrations]
     .sort((a, b) => a.createdAt - b.createdAt)
     .map((r, index) => `${index + 1}. **${r.pseudo}** — ${r.car}`);
 
@@ -178,7 +172,11 @@ function buildClassesMessage() {
       return [`🏁 **${className}**`, ...drivers].join("\n");
     });
 
-  return ["🏁 **Classement par classe**", "", ...sections].join("\n\n");
+  return [
+    "🏁 **Classement par classe**",
+    "",
+    ...sections
+  ].join("\n\n");
 }
 
 async function sendDuplicateAlert(entry) {
@@ -194,15 +192,20 @@ async function sendDuplicateAlert(entry) {
   }
 }
 
-/* Managed messages */
+/* ----------------------------- */
+/* Managed messages              */
+/* ----------------------------- */
 async function getOrCreateManagedMessage(channel, type) {
-  const marker = type === "recap"
-    ? "BOT_RECAP_INSCRIPTIONS"
-    : "BOT_CLASSES_INSCRIPTIONS";
+  const marker =
+    type === "recap"
+      ? "BOT_RECAP_INSCRIPTIONS"
+      : "BOT_CLASSES_INSCRIPTIONS";
 
   const messages = await channel.messages.fetch({ limit: 20 });
   const existing = messages.find(
-    msg => msg.author.id === client.user.id && msg.content.startsWith(`<!-- ${marker} -->`)
+    msg =>
+      msg.author.id === client.user.id &&
+      msg.content.startsWith(`<!-- ${marker} -->`)
   );
 
   if (existing) return existing;
@@ -227,14 +230,16 @@ async function updateManagedMessages() {
     const recapMessage = await getOrCreateManagedMessage(recapChannel, "recap");
     const classesMessage = await getOrCreateManagedMessage(classesChannel, "classes");
 
-    const newCounterName = getChannelCounterName();
-    if (inscriptionChannel.name !== newCounterName) {
-      await inscriptionChannel.setName(newCounterName);
-      console.log(`Salon renommé : ${newCounterName}`);
+    const wantedName = getCounterChannelName();
+    if (inscriptionChannel.name !== wantedName) {
+      await inscriptionChannel.setName(wantedName);
+      console.log(`Salon renommé : ${wantedName}`);
     }
 
-    const recapContent = `<!-- BOT_RECAP_INSCRIPTIONS -->\n${buildRecapMessage()}`;
-    const classesContent = `<!-- BOT_CLASSES_INSCRIPTIONS -->\n${buildClassesMessage()}`;
+    const recapContent =
+      `<!-- BOT_RECAP_INSCRIPTIONS -->\n${buildRecapMessage()}`;
+    const classesContent =
+      `<!-- BOT_CLASSES_INSCRIPTIONS -->\n${buildClassesMessage()}`;
 
     if (recapMessage.content !== recapContent) {
       await recapMessage.edit(recapContent);
@@ -254,12 +259,15 @@ async function updateManagedMessages() {
 
 function scheduleManagedUpdate() {
   if (updateTimeout) clearTimeout(updateTimeout);
+
   updateTimeout = setTimeout(() => {
     updateManagedMessages();
   }, 1500);
 }
 
-/* Full rebuild from Discord */
+/* ----------------------------- */
+/* Rebuild complet depuis Discord*/
+/* ----------------------------- */
 async function rebuildFromDiscord() {
   try {
     const channel = await client.channels.fetch(INSCRIPTION_CHANNEL_ID);
@@ -284,12 +292,7 @@ async function rebuildFromDiscord() {
         const entry = parseRegistrationFromMessage(message);
         if (!entry) continue;
 
-        const alreadyExists = found.some(r =>
-          normalize(r.pseudo) === normalize(entry.pseudo) &&
-          normalize(r.discord) === normalize(entry.discord)
-        );
-
-        if (!alreadyExists) {
+        if (!isDuplicate(entry, found)) {
           found.push(entry);
         }
       }
@@ -308,7 +311,9 @@ async function rebuildFromDiscord() {
   }
 }
 
-/* Discord events */
+/* ----------------------------- */
+/* Discord events                */
+/* ----------------------------- */
 client.once("clientReady", async () => {
   try {
     console.log(`Connecté en tant que ${client.user.tag}`);
@@ -347,27 +352,10 @@ client.on("messageCreate", async (message) => {
 
 client.on("messageDelete", async (message) => {
   try {
-    const fullMessage = await safeFetchMessage(message);
-    if (fullMessage.channel?.id !== INSCRIPTION_CHANNEL_ID) return;
-    if (!isRegistrationMessage(fullMessage)) return;
+    if (message.channel?.id !== INSCRIPTION_CHANNEL_ID) return;
 
-    const entry = parseRegistrationFromMessage(fullMessage);
-    if (!entry) {
-      await rebuildFromDiscord();
-      return;
-    }
-
-    const before = registrations.length;
-    registrations = registrations.filter(r => r.messageId !== fullMessage.id);
-
-    if (registrations.length === before) {
-      await rebuildFromDiscord();
-      return;
-    }
-
-    saveData();
-    scheduleManagedUpdate();
-    console.log(`Inscription supprimée : ${entry.pseudo}`);
+    console.log("Suppression détectée dans le salon inscription -> reconstruction complète");
+    await rebuildFromDiscord();
   } catch (error) {
     console.error("Erreur messageDelete :", error);
   }
@@ -375,33 +363,10 @@ client.on("messageDelete", async (message) => {
 
 client.on("messageUpdate", async (oldMessage, newMessage) => {
   try {
-    const oldFull = await safeFetchMessage(oldMessage);
-    const newFull = await safeFetchMessage(newMessage);
+    if (newMessage.channel?.id !== INSCRIPTION_CHANNEL_ID) return;
 
-    if (newFull.channel?.id !== INSCRIPTION_CHANNEL_ID) return;
-
-    const wasRegistration = isRegistrationMessage(oldFull);
-    const isNowRegistration = isRegistrationMessage(newFull);
-
-    if (!wasRegistration && !isNowRegistration) return;
-
-    registrations = registrations.filter(r => r.messageId !== newFull.id);
-
-    if (isNowRegistration) {
-      const entry = parseRegistrationFromMessage(newFull);
-      if (entry) {
-        if (isDuplicate(entry)) {
-          await sendDuplicateAlert(entry);
-        } else {
-          registrations.push(entry);
-          registrations.sort((a, b) => a.createdAt - b.createdAt);
-        }
-      }
-    }
-
-    saveData();
-    scheduleManagedUpdate();
-    console.log("Message d'inscription modifié, données mises à jour.");
+    console.log("Modification détectée dans le salon inscription -> reconstruction complète");
+    await rebuildFromDiscord();
   } catch (error) {
     console.error("Erreur messageUpdate :", error);
   }
