@@ -314,7 +314,7 @@ async function rebuildFromDiscord() {
 /* ----------------------------- */
 /* Discord events                */
 /* ----------------------------- */
-client.once("clientReady", async () => {
+client.on("ready", async () => {
   try {
     console.log(`Connecté en tant que ${client.user.tag}`);
     loadData();
@@ -376,6 +376,10 @@ client.on("error", (error) => {
   console.error("Erreur client Discord :", error);
 });
 
+client.on("shardError", (error) => {
+  console.error("Erreur shard Discord :", error);
+});
+
 process.on("unhandledRejection", (error) => {
   console.error("Unhandled rejection :", error);
 });
@@ -384,9 +388,14 @@ process.on("uncaughtException", (error) => {
   console.error("Uncaught exception :", error);
 });
 
+console.log("TOKEN présent :", !!TOKEN);
+
 if (!TOKEN) {
   console.error("TOKEN manquant dans les variables d'environnement.");
   process.exit(1);
 }
 
-client.login(TOKEN);
+console.log("Tentative de connexion à Discord...");
+client.login(TOKEN).catch((error) => {
+  console.error("Erreur login Discord :", error);
+});
