@@ -31,9 +31,6 @@ let registrations = [];
 let updateTimeout = null;
 let updateRunning = false;
 
-/* ----------------------------- */
-/* Render web server             */
-/* ----------------------------- */
 app.get("/", (req, res) => {
   res.send("Bot running");
 });
@@ -42,9 +39,6 @@ app.listen(PORT, () => {
   console.log(`Web server running on port ${PORT}`);
 });
 
-/* ----------------------------- */
-/* Storage                       */
-/* ----------------------------- */
 function loadData() {
   try {
     if (!fs.existsSync(DATA_FILE)) {
@@ -70,9 +64,6 @@ function saveData() {
   }
 }
 
-/* ----------------------------- */
-/* Helpers                       */
-/* ----------------------------- */
 function normalize(value) {
   return (value || "").trim().toLowerCase();
 }
@@ -192,9 +183,6 @@ async function sendDuplicateAlert(entry) {
   }
 }
 
-/* ----------------------------- */
-/* Managed messages              */
-/* ----------------------------- */
 async function getOrCreateManagedMessage(channel, type) {
   const marker =
     type === "recap"
@@ -265,9 +253,6 @@ function scheduleManagedUpdate() {
   }, 1500);
 }
 
-/* ----------------------------- */
-/* Rebuild complet depuis Discord*/
-/* ----------------------------- */
 async function rebuildFromDiscord() {
   try {
     const channel = await client.channels.fetch(INSCRIPTION_CHANNEL_ID);
@@ -311,18 +296,12 @@ async function rebuildFromDiscord() {
   }
 }
 
-/* ----------------------------- */
-/* Discord events                */
-/* ----------------------------- */
 client.once("ready", async () => {
   try {
     console.log(`Connecté en tant que ${client.user.tag}`);
-
     loadData();
     console.log(`Données chargées : ${registrations.length} inscrit(s).`);
-
     await rebuildFromDiscord();
-
   } catch (error) {
     console.error("Erreur au démarrage :", error);
   }
@@ -356,7 +335,6 @@ client.on("messageCreate", async (message) => {
 client.on("messageDelete", async (message) => {
   try {
     if (message.channel?.id !== INSCRIPTION_CHANNEL_ID) return;
-
     console.log("Suppression détectée dans le salon inscription -> reconstruction complète");
     await rebuildFromDiscord();
   } catch (error) {
@@ -367,7 +345,6 @@ client.on("messageDelete", async (message) => {
 client.on("messageUpdate", async (oldMessage, newMessage) => {
   try {
     if (newMessage.channel?.id !== INSCRIPTION_CHANNEL_ID) return;
-
     console.log("Modification détectée dans le salon inscription -> reconstruction complète");
     await rebuildFromDiscord();
   } catch (error) {
