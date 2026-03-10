@@ -314,7 +314,7 @@ async function rebuildFromDiscord() {
 /* ----------------------------- */
 /* Discord events                */
 /* ----------------------------- */
-client.once("clientReady", async () => {
+client.once("ready", () => {
   try {
     console.log(`Connecté en tant que ${client.user.tag}`);
     loadData();
