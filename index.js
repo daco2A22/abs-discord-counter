@@ -9,7 +9,7 @@ const {
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const TOKEN = process.env.TOKEN;
+const TOKEN = (process.env.TOKEN || "").trim();
 
 const INSCRIPTION_CHANNEL_ID = "1478513342376312982";
 const RECAP_CHANNEL_ID = "1481020395690917971";
@@ -314,7 +314,7 @@ async function rebuildFromDiscord() {
 /* ----------------------------- */
 /* Discord events                */
 /* ----------------------------- */
-client.on("ready", async () => {
+client.once("clientReady", async () => {
   try {
     console.log(`Connecté en tant que ${client.user.tag}`);
     loadData();
