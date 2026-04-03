@@ -698,10 +698,24 @@ if (!TOKEN) {
   process.exit(1);
 }
 
-console.log("Tentative de connexion à Discord...");
+console.log("TOKEN présent :", !!TOKEN);
+
+if (!TOKEN) {
+  console.error("TOKEN manquant dans les variables d'environnement.");
+  process.exit(1);
+}
 
 client.on("debug", (msg) => {
-  console.log("DEBUG :", msg);
+  if (
+    msg.includes("Preparing") ||
+    msg.includes("Connecting") ||
+    msg.includes("Identifying") ||
+    msg.includes("heartbeat") ||
+    msg.includes("Hello") ||
+    msg.includes("Ready")
+  ) {
+    console.log("DEBUG :", msg);
+  }
 });
 
 client.on("error", (error) => {
@@ -712,6 +726,22 @@ client.on("shardError", (error) => {
   console.error("Erreur shard Discord :", error);
 });
 
+client.on("shardReady", (id) => {
+  console.log(`SHARD READY : ${id}`);
+});
+
+client.on("shardDisconnect", (event, id) => {
+  console.error(`SHARD DISCONNECT : ${id}`, event?.code, event?.reason);
+});
+
+client.on("shardReconnecting", (id) => {
+  console.log(`SHARD RECONNECTING : ${id}`);
+});
+
+client.on("shardResume", (id, replayedEvents) => {
+  console.log(`SHARD RESUME : ${id} (${replayedEvents} events)`);
+});
+
 process.on("unhandledRejection", (error) => {
   console.error("Unhandled rejection :", error);
 });
@@ -720,6 +750,8 @@ process.on("uncaughtException", (error) => {
   console.error("Uncaught exception :", error);
 });
 
+console.log("Tentative de connexion à Discord...");
+
 client.login(TOKEN)
   .then(() => {
     console.log("LOGIN OK");
@@ -727,3 +759,11 @@ client.login(TOKEN)
   .catch((error) => {
     console.error("Erreur login Discord :", error);
   });
+
+setTimeout(() => {
+  if (!client.isReady()) {
+    console.error("Timeout 20s atteint.");
+    console.error("Client ready ?", client.isReady());
+    console.error("User ?", client.user ? client.user.tag : "aucun");
+  }
+}, 20000);
