@@ -1,0 +1,404 @@
+{
+  "registrations": [
+    {
+      "messageId": "1478529911483273328",
+      "pseudo": "ABS Rallye",
+      "discord": "Sushi3003",
+      "className": "R5/Rally2",
+      "car": "Skoda Fabia RS Rally2",
+      "createdAt": 1772579400655
+    },
+    {
+      "messageId": "1480268646851940442",
+      "pseudo": "Yazrod",
+      "discord": "Yazrod#6284",
+      "className": "R5/Rally2",
+      "car": "Peugeot 208 T16 R5",
+      "createdAt": 1772993947471
+    },
+    {
+      "messageId": "1480623213489950800",
+      "pseudo": "Maxou",
+      "discord": "maxou#9842",
+      "className": "R5/Rally2",
+      "car": "Hyundai i20 N Rally2",
+      "createdAt": 1773078482745
+    },
+    {
+      "messageId": "1480861962530459721",
+      "pseudo": "EPJ_Racing_Team",
+      "discord": "wiizard29",
+      "className": "R5/Rally2",
+      "car": "Skoda Fabia RS Rally2",
+      "createdAt": 1773135404952
+    },
+    {
+      "messageId": "1481073761493975183",
+      "pseudo": "Las2picque",
+      "discord": "—",
+      "className": "A7",
+      "car": "Renault Clio 16S Williams GrpA",
+      "createdAt": 1773185901760
+    },
+    {
+      "messageId": "1481347576501502012",
+      "pseudo": "maxence laborie",
+      "discord": "maxou12112",
+      "className": "A6",
+      "car": "Peugeot 106 Rallye S20 GrpA",
+      "createdAt": 1773251184345
+    },
+    {
+      "messageId": "1482101544605323295",
+      "pseudo": "Loulou",
+      "discord": "slomocq_",
+      "className": "Rally 4",
+      "car": "Peugeot 208 Rally4",
+      "createdAt": 1773430944349
+    },
+    {
+      "messageId": "1482101845148176599",
+      "pseudo": "Axel AOUMAT",
+      "discord": "akselfv",
+      "className": "R5/Rally2",
+      "car": "Skoda Fabia RS Rally2",
+      "createdAt": 1773431016004
+    },
+    {
+      "messageId": "1483217453587890403",
+      "pseudo": "Ylan SULPICE",
+      "discord": "yl4n.s",
+      "className": "R5/Rally2",
+      "car": "Skoda Fabia RS Rally2",
+      "createdAt": 1773696997783
+    },
+    {
+      "messageId": "1486417687209836655",
+      "pseudo": "Rallye06",
+      "discord": "Mick06",
+      "className": "Rally 3",
+      "car": "Renault Clio Rally3",
+      "createdAt": 1774459992936
+    },
+    {
+      "messageId": "1486418764730863638",
+      "pseudo": "juleslecoffre_brion",
+      "discord": "GAF_JULES_LEC",
+      "className": "R5/Rally2",
+      "car": "Skoda Fabia RS Rally2",
+      "createdAt": 1774460249837
+    },
+    {
+      "messageId": "1486422417088843826",
+      "pseudo": "ArnoRallye84_Art",
+      "discord": "Arnaud Point ArnoRallye84_Art",
+      "className": "RGT",
+      "car": "Porsche 911 GT3 RS (2010) RGT",
+      "createdAt": 1774461120627
+    },
+    {
+      "messageId": "1486441997635031212",
+      "pseudo": "nicoN2s",
+      "discord": "nicoN2s",
+      "className": "R5/Rally2",
+      "car": "Skoda Fabia RS Rally2",
+      "createdAt": 1774465788993
+    },
+    {
+      "messageId": "1486467608231546951",
+      "pseudo": "Jo_e60",
+      "discord": "SLR_Jo_rallye",
+      "className": "Rally 4",
+      "car": "Peugeot 208 Rally4",
+      "createdAt": 1774471895035
+    },
+    {
+      "messageId": "1486476334887862374",
+      "pseudo": "Jeremy Raylix",
+      "discord": "jeremyraylix",
+      "className": "Rally 4",
+      "car": "Peugeot 208 Rally4",
+      "createdAt": 1774473975632
+    },
+    {
+      "messageId": "1486497167748239552",
+      "pseudo": "Janko23",
+      "discord": "Jnk23",
+      "className": "R3",
+      "car": "Renault Clio III R3",
+      "createdAt": 1774478942573
+    },
+    {
+      "messageId": "1486658022817398823",
+      "pseudo": "Miam",
+      "discord": "miam.666",
+      "className": "Rally 3",
+      "car": "Renault Clio Rally3",
+      "createdAt": 1774517293410
+    },
+    {
+      "messageId": "1486695824414085231",
+      "pseudo": "Ludovic BERTAINA",
+      "discord": "Lud0o",
+      "className": "Rally 3",
+      "car": "Renault Clio Rally3",
+      "createdAt": 1774526306013
+    },
+    {
+      "messageId": "1486785643571838997",
+      "pseudo": "Lefevre Alonso",
+      "discord": "Bratvol",
+      "className": "R5/Rally2",
+      "car": "Hyundai i20 N Rally2",
+      "createdAt": 1774547720569
+    },
+    {
+      "messageId": "1486811012505145516",
+      "pseudo": "fclna",
+      "discord": "colonnaafrancescu",
+      "className": "Rally 3",
+      "car": "Renault Clio Rally3",
+      "createdAt": 1774553768994
+    },
+    {
+      "messageId": "1486815601526571099",
+      "pseudo": "MOMOMERMILLOD",
+      "discord": "m_774",
+      "className": "Rally 5",
+      "car": "Renault Clio Rally5",
+      "createdAt": 1774554863102
+    },
+    {
+      "messageId": "1486816651780292760",
+      "pseudo": "Bvr.fangio62",
+      "discord": "Bvr.fangio62",
+      "className": "R4",
+      "car": "Mitsubishi Lancer Evo IX R4",
+      "createdAt": 1774555113502
+    },
+    {
+      "messageId": "1486829279328338033",
+      "pseudo": "jojopallone",
+      "discord": "jojopallone",
+      "className": "Super 2000",
+      "car": "Skoda Fabia S2000 Evo 2",
+      "createdAt": 1774558124144
+    },
+    {
+      "messageId": "1486870090413506610",
+      "pseudo": "Remi RABELLE",
+      "discord": "@katchooow",
+      "className": "A7",
+      "car": "VW Golf II GTI 16V GrpA",
+      "createdAt": 1774567854265
+    },
+    {
+      "messageId": "1486871948666339471",
+      "pseudo": "Skyzo66",
+      "discord": "Skyzo66",
+      "className": "R4",
+      "car": "Mitsubishi Lancer Evo IX R4",
+      "createdAt": 1774568297307
+    },
+    {
+      "messageId": "1486963503389474908",
+      "pseudo": "Vad",
+      "discord": "Vad",
+      "className": "R4",
+      "car": "Mitsubishi Lancer Evo X R4",
+      "createdAt": 1774590125654
+    },
+    {
+      "messageId": "1487001218416115712",
+      "pseudo": "Izumi__59",
+      "discord": "_izumi_59",
+      "className": "Rally 4",
+      "car": "Peugeot 208 Rally4",
+      "createdAt": 1774599117617
+    },
+    {
+      "messageId": "1487408426849144893",
+      "pseudo": "gostair",
+      "discord": "gostair",
+      "className": "A8",
+      "car": "BMW M3 E30 GrpA",
+      "createdAt": 1774696203673
+    },
+    {
+      "messageId": "1487781674115928247",
+      "pseudo": "Ymer07",
+      "discord": "Ymer07",
+      "className": "R3",
+      "car": "Citroen DS3 R3-MAX",
+      "createdAt": 1774785192756
+    },
+    {
+      "messageId": "1487781824829591584",
+      "pseudo": "Rallyehd",
+      "discord": "Howayy",
+      "className": "A8",
+      "car": "Subaru Impreza GC8 555 GrpA",
+      "createdAt": 1774785228689
+    },
+    {
+      "messageId": "1487782265600606270",
+      "pseudo": "RallyeJer71",
+      "discord": "RallyeJer71",
+      "className": "A7",
+      "car": "Renault Clio 16S Williams GrpA",
+      "createdAt": 1774785333777
+    },
+    {
+      "messageId": "1487782843978485813",
+      "pseudo": "Team-Vrac",
+      "discord": "Team-Vrac",
+      "className": "A8",
+      "car": "Toyota Celica 2000GT(ST185) GrpA",
+      "createdAt": 1774785471673
+    },
+    {
+      "messageId": "1487820541711614136",
+      "pseudo": "Nicolcpm",
+      "discord": "nicolcpm",
+      "className": "A8",
+      "car": "Ford Escort Mk V RS Cosworth GrpA",
+      "createdAt": 1774794459513
+    },
+    {
+      "messageId": "1487845013479231508",
+      "pseudo": "LudoRallySim",
+      "discord": "LudoRallySim (JudgeDead)",
+      "className": "A6",
+      "car": "Peugeot 106 Rallye S20 GrpA",
+      "createdAt": 1774800294037
+    },
+    {
+      "messageId": "1488064455723188356",
+      "pseudo": "Seb1515",
+      "discord": "Seb1515",
+      "className": "R3",
+      "car": "Renault Clio III R3",
+      "createdAt": 1774852613145
+    },
+    {
+      "messageId": "1488079145895465042",
+      "pseudo": "Darkvaloche",
+      "discord": "Darkvaloche",
+      "className": "A8",
+      "car": "Toyota Celica 2000GT(ST185) GrpA",
+      "createdAt": 1774856115555
+    },
+    {
+      "messageId": "1488102601680486410",
+      "pseudo": "lejean",
+      "discord": "lejean",
+      "className": "Rally 5",
+      "car": "Renault Clio Rally5",
+      "createdAt": 1774861707850
+    },
+    {
+      "messageId": "1488142164356501544",
+      "pseudo": "SREfullrope",
+      "discord": "pat cast",
+      "className": "Super 2000",
+      "car": "Peugeot 207 S2000 Evolution Plus",
+      "createdAt": 1774871140327
+    },
+    {
+      "messageId": "1488275628200562838",
+      "pseudo": "enexaam",
+      "discord": "enexaam",
+      "className": "Rally 3",
+      "car": "Renault Clio Rally3",
+      "createdAt": 1774902960587
+    },
+    {
+      "messageId": "1488517887730651166",
+      "pseudo": "Gabriel31",
+      "discord": "gabriel31rallye",
+      "className": "A8",
+      "car": "Ford Escort Mk V RS Cosworth GrpA",
+      "createdAt": 1774960719760
+    },
+    {
+      "messageId": "1488574139043287060",
+      "pseudo": "taillefer",
+      "discord": "liago34",
+      "className": "Super 2000",
+      "car": "Skoda Fabia S2000 Evo 2",
+      "createdAt": 1774974131118
+    },
+    {
+      "messageId": "1488656803104297112",
+      "pseudo": "Makinen88",
+      "discord": "Makinen_ART",
+      "className": "R4",
+      "car": "Mitsubishi Lancer Evo IX R4",
+      "createdAt": 1774993839766
+    },
+    {
+      "messageId": "1488686530737471680",
+      "pseudo": "Eyygo",
+      "discord": ".eyygo",
+      "className": "A8",
+      "car": "Subaru Impreza GC8 555 GrpA",
+      "createdAt": 1775000927386
+    },
+    {
+      "messageId": "1488689155876585698",
+      "pseudo": "DaKo2a",
+      "discord": "daco2a",
+      "className": "Super 2000",
+      "car": "Peugeot 207 S2000 Evolution Plus",
+      "createdAt": 1775001553268
+    },
+    {
+      "messageId": "1488955850977443963",
+      "pseudo": "Lirzix",
+      "discord": "lirzix",
+      "className": "A7",
+      "car": "Renault Clio 16S Williams GrpA",
+      "createdAt": 1775065138335
+    },
+    {
+      "messageId": "1488965232532525200",
+      "pseudo": "Matis_Brion",
+      "discord": "Matis_Brion",
+      "className": "R5/Rally2",
+      "car": "Skoda Fabia RS Rally2",
+      "createdAt": 1775067375072
+    },
+    {
+      "messageId": "1488992329984381069",
+      "pseudo": "Juliendu06",
+      "discord": "Juliendu06_68779",
+      "className": "Super 2000",
+      "car": "Peugeot 207 S2000 Evolution Plus",
+      "createdAt": 1775073835608
+    },
+    {
+      "messageId": "1489014748908490863",
+      "pseudo": "AlexLFV1612",
+      "discord": "lfvarmy",
+      "className": "Rally 3",
+      "car": "Renault Clio Rally3",
+      "createdAt": 1775079180696
+    },
+    {
+      "messageId": "1489173899047342140",
+      "pseudo": "Frada Jonathan",
+      "discord": "Banshee480#1983",
+      "className": "A6",
+      "car": "Peugeot 106 Rallye S20 GrpA",
+      "createdAt": 1775117125046
+    },
+    {
+      "messageId": "1489194666535424194",
+      "pseudo": "ALLEAUME JULIEN",
+      "discord": "juliena7k",
+      "className": "R3",
+      "car": "Renault Clio IV R3T",
+      "createdAt": 1775122076401
+    }
+  ]
+}

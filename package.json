@@ -1,0 +1,15 @@
+{
+  "name": "abs-counter",
+  "version": "1.0.0",
+  "description": "Discord registration bot local",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "discord.js": "^14.25.1",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2"
+  }
+}
