@@ -254,7 +254,7 @@ function normalizeText(value) {
 }
 
 function getOfficialClassOrder() {
-  return OFFICIAL_CLASSES.map(c => c.label);
+  return OFFICIAL_CLASSES.map((c) => c.label);
 }
 
 function findOfficialCar(carName) {
@@ -290,8 +290,8 @@ function parseRegistrationFromMessage(message) {
   if (!embed) return null;
 
   const getField = (names) => {
-    const field = embed.fields?.find(f =>
-      names.some(name => ((f.name || "").toLowerCase().includes(name)))
+    const field = embed.fields?.find((f) =>
+      names.some((name) => ((f.name || "").toLowerCase().includes(name)))
     );
     return field?.value?.trim() || "";
   };
@@ -319,7 +319,7 @@ function parseRegistrationFromMessage(message) {
 }
 
 function isDuplicate(entry, list = registrations) {
-  return list.some(r =>
+  return list.some((r) =>
     normalize(r.pseudo) === normalize(entry.pseudo) &&
     normalize(r.discord) === normalize(entry.discord)
   );
@@ -445,7 +445,7 @@ function buildClassesMessage() {
     })
     .map(([car, count], index) => `${index + 1}. **${car}** — ${count}`);
 
-  const sections = sortedClassNames.map(className => {
+  const sections = sortedClassNames.map((className) => {
     const drivers = grouped[className]
       .sort((a, b) => a.createdAt - b.createdAt)
       .map((r, index) => `${index + 1}. **${r.pseudo}** — ${r.car}`);
@@ -489,7 +489,7 @@ async function getManagedMessages(channel, marker) {
 
   return [...messages.values()]
     .filter(
-      msg =>
+      (msg) =>
         msg.author.id === client.user.id &&
         msg.content.startsWith(`<!-- ${marker} -->`)
     )
@@ -691,13 +691,9 @@ process.on("uncaughtException", (error) => {
   console.error("Uncaught exception :", error);
 });
 
-console.log("TOKEN présent :", !!TOKEN);
-
-if (!TOKEN) {
-  console.error("TOKEN manquant dans les variables d'environnement.");
-  process.exit(1);
-}
-
+/* ----------------------------- */
+/* Démarrage                     */
+/* ----------------------------- */
 console.log("TOKEN présent :", !!TOKEN);
 
 if (!TOKEN) {
@@ -718,14 +714,6 @@ client.on("debug", (msg) => {
   }
 });
 
-client.on("error", (error) => {
-  console.error("Erreur client Discord :", error);
-});
-
-client.on("shardError", (error) => {
-  console.error("Erreur shard Discord :", error);
-});
-
 client.on("shardReady", (id) => {
   console.log(`SHARD READY : ${id}`);
 });
@@ -740,14 +728,6 @@ client.on("shardReconnecting", (id) => {
 
 client.on("shardResume", (id, replayedEvents) => {
   console.log(`SHARD RESUME : ${id} (${replayedEvents} events)`);
-});
-
-process.on("unhandledRejection", (error) => {
-  console.error("Unhandled rejection :", error);
-});
-
-process.on("uncaughtException", (error) => {
-  console.error("Uncaught exception :", error);
 });
 
 console.log("Tentative de connexion à Discord...");
