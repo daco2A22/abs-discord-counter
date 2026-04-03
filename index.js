@@ -698,7 +698,18 @@ if (!TOKEN) {
   process.exit(1);
 }
 
-console.log("Tentative de connexion à Discord...");
-client.login(TOKEN).catch((error) => {
-  console.error("Erreur login Discord :", error);
-});
+701 console.log("Tentative de connexion à Discord...");
+
+702 client.on("debug", (msg) => {
+703   console.log("DEBUG :", msg);
+704 });
+
+705 client.on("error", (error) => {
+706   console.error("Erreur client Discord :", error);
+707 });
+
+708 client.login(TOKEN)
+709   .then(() => console.log("LOGIN OK"))
+710   .catch((error) => {
+711     console.error("Erreur login Discord :", error);
+712   });
