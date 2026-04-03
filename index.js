@@ -694,22 +694,36 @@ process.on("uncaughtException", (error) => {
 console.log("TOKEN présent :", !!TOKEN);
 
 if (!TOKEN) {
-  console.error("TOKEN manquant dans le fichier .env.");
+  console.error("TOKEN manquant dans les variables d'environnement.");
   process.exit(1);
 }
 
-701 console.log("Tentative de connexion à Discord...");
+console.log("Tentative de connexion à Discord...");
 
-702 client.on("debug", (msg) => {
-703   console.log("DEBUG :", msg);
-704 });
+client.on("debug", (msg) => {
+  console.log("DEBUG :", msg);
+});
 
-705 client.on("error", (error) => {
-706   console.error("Erreur client Discord :", error);
-707 });
+client.on("error", (error) => {
+  console.error("Erreur client Discord :", error);
+});
 
-708 client.login(TOKEN)
-709   .then(() => console.log("LOGIN OK"))
-710   .catch((error) => {
-711     console.error("Erreur login Discord :", error);
-712   });
+client.on("shardError", (error) => {
+  console.error("Erreur shard Discord :", error);
+});
+
+process.on("unhandledRejection", (error) => {
+  console.error("Unhandled rejection :", error);
+});
+
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught exception :", error);
+});
+
+client.login(TOKEN)
+  .then(() => {
+    console.log("LOGIN OK");
+  })
+  .catch((error) => {
+    console.error("Erreur login Discord :", error);
+  });
