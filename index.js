@@ -702,16 +702,7 @@ if (!TOKEN) {
 }
 
 client.on("debug", (msg) => {
-  if (
-    msg.includes("Preparing") ||
-    msg.includes("Connecting") ||
-    msg.includes("Identifying") ||
-    msg.includes("heartbeat") ||
-    msg.includes("Hello") ||
-    msg.includes("Ready")
-  ) {
-    console.log("DEBUG :", msg);
-  }
+  console.log("DEBUG :", msg);
 });
 
 client.on("shardReady", (id) => {
@@ -742,8 +733,8 @@ client.login(TOKEN)
 
 setTimeout(() => {
   if (!client.isReady()) {
-    console.error("Timeout 20s atteint.");
+    console.error("Timeout 70s atteint.");
     console.error("Client ready ?", client.isReady());
     console.error("User ?", client.user ? client.user.tag : "aucun");
   }
-}, 20000);
+}, 70000);
