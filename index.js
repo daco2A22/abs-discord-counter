@@ -258,10 +258,7 @@ function normalizeText(value) {
 }
 
 function normalizeRSF(value) {
-  return (value || "")
-    .trim()
-    .toLowerCase()
-    .replace(/\/$/, "");
+  return (value || "").trim().toLowerCase().replace(/\/$/, "");
 }
 
 function getOfficialClassOrder() {
@@ -283,12 +280,6 @@ function findOfficialCar(carName) {
   }
 
   return null;
-}
-
-function findClassIdByLabel(label) {
-  const target = normalizeText(label);
-  const found = OFFICIAL_CLASSES.find((c) => normalizeText(c.label) === target);
-  return found ? found.id : "";
 }
 
 function isRegistrationMessage(message) {
@@ -316,18 +307,18 @@ function parseRegistrationFromMessage(message) {
   };
 
   const pseudo = getField(["pseudo"]);
-  const nom = getField(["nom réel", "real name", "nom"]);
   const discord = getField(["discord"]);
+  const nom = getField(["nom réel", "real name", "nom"]);
   const nationality = getField(["nationalité", "nationality"]);
   const languagesRaw = getField(["langues", "languages"]);
   const experience = getField(["niveau", "level"]);
+  const rsfProfile = getField(["profil rsf", "rsf"]);
   const rawCar = getField(["voiture", "car"]);
   const rawClass = getField(["classe", "class"]);
-  const rsfProfile = getField(["profil rsf", "rsf"]);
 
-  if (!pseudo && !discord && !rawCar && !rsfProfile) return null;
+  if (!pseudo || !discord || !rawCar) return null;
 
-  const officialCar = rawCar ? findOfficialCar(rawCar) : null;
+  const officialCar = findOfficialCar(rawCar);
 
   const className = officialCar ? officialCar.classLabel : (rawClass || "Non définie");
   const car = officialCar ? officialCar.carName : rawCar;
@@ -335,28 +326,21 @@ function parseRegistrationFromMessage(message) {
   return {
     messageId: message.id,
     pseudo,
-    nom,
     discord,
+    nom,
     nationality,
     languages: languagesRaw
       ? languagesRaw.split(",").map((x) => x.trim()).filter(Boolean)
       : [],
     experience,
-    className,
-    classId: findClassIdByLabel(className),
-    car,
     rsfProfile,
+    className,
+    car,
     createdAt: message.createdTimestamp || Date.now()
   };
 }
 
 function isDuplicate(entry, list = registrations) {
-  if (entry.rsfProfile) {
-    return list.some((r) =>
-      r.rsfProfile && normalizeRSF(r.rsfProfile) === normalizeRSF(entry.rsfProfile)
-    );
-  }
-
   return list.some((r) =>
     normalize(r.pseudo) === normalize(entry.pseudo) &&
     normalize(r.discord) === normalize(entry.discord)
@@ -364,9 +348,7 @@ function isDuplicate(entry, list = registrations) {
 }
 
 function findRegistrationByRSF(rsfProfile) {
-  return registrations.find(
-    (r) => r.rsfProfile && normalizeRSF(r.rsfProfile) === normalizeRSF(rsfProfile)
-  );
+  return registrations.find((r) => normalizeRSF(r.rsfProfile) === normalizeRSF(rsfProfile));
 }
 
 function getCounterChannelName() {
@@ -525,12 +507,10 @@ async function sendDuplicateAlert(entry) {
   }
 }
 
-function buildRegistrationEmbed(data, isUpdate = false) {
+function buildUpdatedEmbed(data) {
   return {
-    title: isUpdate
-      ? "✏️ Inscription modifiée / Registration Updated — ABS French Rally League"
-      : "🏁 Nouvelle inscription / New Registration — ABS French Rally League",
-    color: isUpdate ? 0x3498db : 0xf0b429,
+    title: "✏️ Inscription modifiée / Registration Updated — ABS French Rally League",
+    color: 0x3498db,
     fields: [
       { name: "👤 Pseudo", value: data.pseudo || "—", inline: true },
       { name: "📛 Nom réel / Real Name", value: data.nom || "—", inline: true },
@@ -538,9 +518,7 @@ function buildRegistrationEmbed(data, isUpdate = false) {
       { name: "🌍 Nationalité / Nationality", value: data.nationality || "—", inline: true },
       {
         name: "🗣️ Langues / Languages",
-        value: Array.isArray(data.languages) && data.languages.length
-          ? data.languages.join(", ")
-          : "—",
+        value: Array.isArray(data.languages) && data.languages.length ? data.languages.join(", ") : "—",
         inline: true
       },
       { name: "⭐ Niveau / Level", value: data.experience || "—", inline: true },
@@ -548,11 +526,7 @@ function buildRegistrationEmbed(data, isUpdate = false) {
       { name: "🚗 Voiture / Car", value: data.car || "—", inline: true },
       { name: "🔗 Profil RSF", value: data.rsfProfile || "—", inline: false }
     ],
-    footer: {
-      text: isUpdate
-        ? "ABS French Rally League — Modification"
-        : "ABS French Rally League — RBR RSF NGP7"
-    },
+    footer: { text: "ABS French Rally League — Modification" },
     timestamp: new Date().toISOString()
   };
 }
@@ -693,10 +667,6 @@ async function rebuildFromDiscord() {
 /* ----------------------------- */
 /* API                           */
 /* ----------------------------- */
-app.get("/api/registrations", (req, res) => {
-  res.json({ registrations });
-});
-
 app.post("/api/registration/find-by-rsf", (req, res) => {
   try {
     const { rsfProfile } = req.body || {};
@@ -734,39 +704,26 @@ app.post("/api/update-registration", async (req, res) => {
 
     const channel = await client.channels.fetch(INSCRIPTION_CHANNEL_ID);
     if (!channel) {
-      return res.status(500).json({ error: "Salon introuvable" });
+      return res.status(500).json({ error: "Salon inscription introuvable" });
     }
 
     try {
-      if (existing.messageId) {
-        const oldMessage = await channel.messages.fetch(existing.messageId);
-        if (oldMessage) {
-          await oldMessage.delete();
-        }
+      const oldMessage = await channel.messages.fetch(existing.messageId);
+      if (oldMessage) {
+        await oldMessage.delete();
       }
-    } catch (err) {
+    } catch (error) {
       console.log("Ancien message introuvable ou déjà supprimé");
     }
 
-    const embed = buildRegistrationEmbed({
-      pseudo: data.pseudo,
-      nom: data.nom,
-      discord: data.discord,
-      nationality: data.nationality,
-      languages: Array.isArray(data.languages) ? data.languages : [],
-      experience: data.experience,
-      className: data.className,
-      car: data.car,
-      rsfProfile: data.rsfProfile
-    }, true);
-
+    const embed = buildUpdatedEmbed(data);
     await channel.send({ embeds: [embed] });
 
     await rebuildFromDiscord();
 
     return res.json({ success: true });
-  } catch (err) {
-    console.error("Erreur /api/update-registration :", err);
+  } catch (error) {
+    console.error("Erreur /api/update-registration :", error);
     return res.status(500).json({ error: "Erreur serveur" });
   }
 });
