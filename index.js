@@ -15,6 +15,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const TOKEN = (process.env.TOKEN || "").trim();
 
+app.use(express.json());
+
 const INSCRIPTION_CHANNEL_ID = "1478513342376312982";
 const RECAP_CHANNEL_ID = "1481020395690917971";
 const CLASSES_CHANNEL_ID = "1481020577421463712";
@@ -253,6 +255,13 @@ function normalizeText(value) {
     .replace(/\s+/g, " ");
 }
 
+function normalizeRSF(value) {
+  return (value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\/$/, "");
+}
+
 function getOfficialClassOrder() {
   return OFFICIAL_CLASSES.map((c) => c.label);
 }
@@ -291,37 +300,60 @@ function parseRegistrationFromMessage(message) {
 
   const getField = (names) => {
     const field = embed.fields?.find((f) =>
-      names.some((name) => ((f.name || "").toLowerCase().includes(name)))
+      names.some((name) => (f.name || "").toLowerCase().includes(name))
     );
     return field?.value?.trim() || "";
   };
 
   const pseudo = getField(["pseudo"]);
+  const nom = getField(["nom réel", "real name", "nom"]);
   const discord = getField(["discord"]);
+  const nationality = getField(["nationalité", "nationality"]);
+  const languagesRaw = getField(["langues", "languages"]);
+  const experience = getField(["niveau", "level"]);
   const rawCar = getField(["voiture", "car"]);
   const rawClass = getField(["classe", "class"]);
+  const rsfProfile = getField(["profil rsf", "rsf"]);
 
-  if (!pseudo || !discord || !rawCar) return null;
+  if (!pseudo && !nom && !rsfProfile) return null;
 
-  const officialCar = findOfficialCar(rawCar);
-
+  const officialCar = rawCar ? findOfficialCar(rawCar) : null;
   const className = officialCar ? officialCar.classLabel : (rawClass || "Non définie");
   const car = officialCar ? officialCar.carName : rawCar;
 
   return {
     messageId: message.id,
     pseudo,
+    nom,
     discord,
+    nationality,
+    languages: languagesRaw
+      ? languagesRaw.split(",").map((x) => x.trim()).filter(Boolean)
+      : [],
+    experience,
     className,
     car,
+    rsfProfile,
     createdAt: message.createdTimestamp || Date.now()
   };
 }
 
 function isDuplicate(entry, list = registrations) {
-  return list.some((r) =>
-    normalize(r.pseudo) === normalize(entry.pseudo) &&
-    normalize(r.discord) === normalize(entry.discord)
+  return list.some((r) => {
+    if (entry.rsfProfile && r.rsfProfile) {
+      return normalizeRSF(r.rsfProfile) === normalizeRSF(entry.rsfProfile);
+    }
+
+    return (
+      normalize(r.pseudo) === normalize(entry.pseudo) &&
+      normalize(r.discord) === normalize(entry.discord)
+    );
+  });
+}
+
+function findRegistrationByRSF(rsfProfile) {
+  return registrations.find(
+    (r) => normalizeRSF(r.rsfProfile) === normalizeRSF(rsfProfile)
   );
 }
 
@@ -377,7 +409,7 @@ function buildRecapMessage() {
 
   const lines = [...registrations]
     .sort((a, b) => a.createdAt - b.createdAt)
-    .map((r, index) => `${index + 1}. **${r.pseudo}** — ${r.car}`);
+    .map((r, index) => `${index + 1}. **${r.pseudo || r.nom || "Inconnu"}** — ${r.car || "Non définie"}`);
 
   return [
     "🏁 **ABS French Rally League**",
@@ -407,8 +439,9 @@ function buildClassesMessage() {
   const carsCount = {};
 
   for (const r of registrations) {
-    if (!grouped[r.className]) grouped[r.className] = [];
-    grouped[r.className].push(r);
+    const className = r.className || "Non définie";
+    if (!grouped[className]) grouped[className] = [];
+    grouped[className].push(r);
 
     const carName = r.car || "Non définie";
     if (!carsCount[carName]) carsCount[carName] = 0;
@@ -448,7 +481,7 @@ function buildClassesMessage() {
   const sections = sortedClassNames.map((className) => {
     const drivers = grouped[className]
       .sort((a, b) => a.createdAt - b.createdAt)
-      .map((r, index) => `${index + 1}. **${r.pseudo}** — ${r.car}`);
+      .map((r, index) => `${index + 1}. **${r.pseudo || r.nom || "Inconnu"}** — ${r.car || "Non définie"}`);
 
     const count = grouped[className].length;
 
@@ -474,7 +507,7 @@ async function sendDuplicateAlert(entry) {
     if (!channel) return;
 
     await channel.send(
-      `⚠️ Doublon détecté : **${entry.pseudo}** (${entry.discord}) est déjà inscrit.`
+      `⚠️ Doublon détecté : **${entry.pseudo || entry.nom || "Inconnu"}** (${entry.discord || "Discord inconnu"}) est déjà inscrit.`
     );
   } catch (error) {
     console.error("Erreur alerte doublon :", error);
@@ -615,6 +648,34 @@ async function rebuildFromDiscord() {
 }
 
 /* ----------------------------- */
+/* API Express                   */
+/* ----------------------------- */
+app.get("/api/registrations", (req, res) => {
+  res.json({ registrations });
+});
+
+app.post("/api/registration/find-by-rsf", (req, res) => {
+  try {
+    const { rsfProfile } = req.body || {};
+
+    if (!rsfProfile || !rsfProfile.trim()) {
+      return res.status(400).json({ error: "Lien RSF requis" });
+    }
+
+    const registration = findRegistrationByRSF(rsfProfile);
+
+    if (!registration) {
+      return res.status(404).json({ error: "Inscription introuvable" });
+    }
+
+    return res.json({ registration });
+  } catch (error) {
+    console.error("Erreur /api/registration/find-by-rsf :", error);
+    return res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+/* ----------------------------- */
 /* Événements Discord            */
 /* ----------------------------- */
 client.once("clientReady", async () => {
@@ -637,7 +698,7 @@ client.on("messageCreate", async (message) => {
     if (!entry) return;
 
     if (isDuplicate(entry)) {
-      console.log(`Doublon ignoré : ${entry.pseudo} / ${entry.discord}`);
+      console.log(`Doublon ignoré : ${entry.pseudo || entry.nom || "Inconnu"} / ${entry.discord || "Discord inconnu"}`);
       await sendDuplicateAlert(entry);
       return;
     }
@@ -647,7 +708,7 @@ client.on("messageCreate", async (message) => {
     saveData();
     scheduleManagedUpdate();
 
-    console.log(`Nouvelle inscription : ${entry.pseudo} / ${entry.discord}`);
+    console.log(`Nouvelle inscription : ${entry.pseudo || entry.nom || "Inconnu"} / ${entry.discord || "Discord inconnu"}`);
   } catch (error) {
     console.error("Erreur messageCreate :", error);
   }
